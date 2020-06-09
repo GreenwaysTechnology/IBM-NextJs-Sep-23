@@ -1,0 +1,23 @@
+
+<div>
+  <h1>{{title}}</h1>
+  <h2>Data Binding : Interplotion</h2>
+   <div>
+     <p>String {{name}}</p>
+     <p>Number {{age}}</p>
+     <p>Boolean {{isActive ? "Active" : "InActive"}}</p>
+     <p>Object</p>
+     <p>Id {{todo.userId}}</p>
+     <p>Title {{todo.title}}</p>
+     <p>Completed {{todo.completed}}</p>
+   </div>
+   <div>
+     <h1>Profile Component Integration</h1>
+      <app-profile 
+      [title]="'IBM Profile Page'">
+
+      </app-profile>
+   </div>
+    
+
+</div>
