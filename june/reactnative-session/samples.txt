@@ -1,0 +1,441 @@
+import React, { useState } from 'react';
+import {Text,View,StyleSheet, Button, TextInput, Alert} from 'react-native';
+
+
+const  App = ()=>{
+
+    const [text,setText]= useState('Place holder');
+    const[item,setItem] = useState([]);
+
+    const update=input=>{
+        setText(input)
+    }
+    const addItem= ()=>{
+        Alert.alert(text);
+        setText('Item');
+        setItem([...item,text]);
+    }
+
+    return <View style={styles.container}>
+        <TextInput style={styles.input} value={text} onChangeText={update}/>
+        <Button title="Add" onPress={addItem}/>
+        <View>
+            {item.map((i,index)=>
+             <View key={index} style={styles.listItem}>
+               <Text>{i}</Text>
+             </View>
+            
+            )}
+        </View>
+    </View>
+};
+export default App;
+
+const styles = StyleSheet.create({
+    container:{
+        backgroundColor :'white',
+        paddingTop:50,
+        marginLeft :10,
+        flex:1,
+        paddingEnd:20
+    },
+    input: {
+        width:'100%',
+        borderColor:'black',
+        borderWidth:1,
+        padding:10,
+        marginBottom:10
+
+     },
+     listItem:{
+         padding:10,
+         marginVertical:10,
+         backgroundColor:'pink'
+     }
+});
+********************************************************************************************
+
+Scrolling Behaviour:
+
+import React, { useState } from 'react';
+import {Text,View,StyleSheet, Button, TextInput, Alert, ScrollView} from 'react-native';
+
+
+const  App = ()=>{
+
+    const [text,setText]= useState('Place holder');
+    const[item,setItem] = useState([]);
+
+    const update=input=>{
+        setText(input)
+    }
+    const addItem= ()=>{
+      //  Alert.alert(text);
+        setText('Item');
+        setItem([...item,text]);
+    }
+
+    return <View style={styles.container}>
+        <TextInput style={styles.input} value={text} onChangeText={update}/>
+        <Button title="Add" onPress={addItem}/>
+        <ScrollView>
+            {item.map((i,index)=>
+             <View key={index} style={styles.listItem}>
+               <Text>{i}</Text>
+             </View>
+            
+            )}
+        </ScrollView>
+    </View>
+};
+export default App;
+
+const styles = StyleSheet.create({
+    container:{
+        backgroundColor :'white',
+        paddingTop:50,
+        marginLeft :10,
+        flex:1,
+        paddingEnd:20
+    },
+    input: {
+        width:'100%',
+        borderColor:'black',
+        borderWidth:1,
+        padding:10,
+        marginBottom:10
+
+     },
+     listItem:{
+         padding:10,
+         marginVertical:10,
+         backgroundColor:'pink'
+     }
+});
+
+Flat List : 
+ When compare to scroll view , which renders all elements in advance, in case if you
+have more items shown beyond screen view.
+infinit list handling efficiently
+
+import React, { useState } from 'react';
+import {Text,View,StyleSheet, Button, TextInput, Alert, ScrollView, FlatList} from 'react-native';
+
+
+const  App = ()=>{
+
+    const [text,setText]= useState('Place holder');
+    const[item,setItem] = useState([]);
+
+    const update=input=>{
+        setText(input)
+    }
+    const addItem= ()=>{
+      //  Alert.alert(text);
+        setText('Item');
+        setItem([...item,text]);
+    }
+
+    return <View style={styles.container}>
+        <TextInput style={styles.input} value={text} onChangeText={update}/>
+        <Button title="Add" onPress={addItem}/>
+        <FlatList data={item} renderItem={itemData=>(
+                <View style={styles.listItem}>
+                    <Text>{itemData.item}</Text>
+                </View>
+        )} />
+           
+    </View>
+};
+export default App;
+
+const styles = StyleSheet.create({
+    container:{
+        backgroundColor :'white',
+        paddingTop:50,
+        marginLeft :10,
+        flex:1,
+        paddingEnd:20
+    },
+    input: {
+        width:'100%',
+        borderColor:'black',
+        borderWidth:1,
+        padding:10,
+        marginBottom:10
+
+     },
+     listItem:{
+         padding:10,
+         marginVertical:10,
+         backgroundColor:'pink'
+     }
+});
+***************************************************************************************
+FlatList with array of Objects:
+...............................
+
+
+keyExtractor tells the list to use the ids for the react keys instead of the default key property.
+
+
+import React from 'react';
+import {View, FlatList, StyleSheet, Text } from 'react-native';
+import Constants from 'expo-constants';
+import COMMENTS from './data/comments';
+
+
+
+function Item({ title }) {
+  return (
+    <View style={styles.item}>
+      <Text style={styles.title}>{title}</Text>
+    </View>
+  );
+}
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={COMMENTS}
+        renderItem={({ item }) => <Item title={item.name} />}
+        keyExtractor={item => item.id.toString()}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: Constants.statusBarHeight,
+  },
+  item: {
+    backgroundColor: '#f9c2ff',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    fontSize: 32,
+  },
+});
+
+****************************************************************************************
+
+Touchable Component
+
+TouchableOpacity
+TouchableHighlight
+
+
+import React, { useState } from 'react';
+import {Text,View,StyleSheet, Button, TextInput, Alert, FlatList, TouchableOpacity} from 'react-native';
+
+
+const  App = ()=>{
+
+    const [text,setText]= useState('');
+    const[item,setItem] = useState([]);
+
+    const update=input=>{
+        setText(input)
+    }
+    const addItem= ()=>{
+      //  Alert.alert(text);
+        setText('Item');
+        setItem([...item,text]);
+    }
+
+    return <View style={styles.container}>
+        <TextInput style={styles.input} value={text} onChangeText={update}/>
+        <Button title="Add" onPress={addItem}/>
+        <FlatList data={item} renderItem={itemData=>(
+                <TouchableOpacity onPress={()=>{
+                    Alert.alert('Touched', itemData.item)
+                }}>
+                <View style={styles.listItem} >
+                    <Text>{itemData.item}</Text>
+                </View>
+                </TouchableOpacity>
+        )} />
+           
+    </View>
+};
+export default App;
+
+const styles = StyleSheet.create({
+    container:{
+        backgroundColor :'white',
+        paddingTop:50,
+        marginLeft :10,
+        flex:1,
+        paddingEnd:20
+    },
+    input: {
+        width:'100%',
+        borderColor:'black',
+        borderWidth:1,
+        padding:10,
+        marginBottom:10
+
+     },
+     listItem:{
+         padding:10,
+         marginVertical:10,
+         backgroundColor:'pink'
+     }
+});
+
+TouchableHighLight
+import React, { useState } from 'react';
+import {Text,View,StyleSheet, Button, TextInput, Alert, FlatList, TouchableOpacity, TouchableHighlight} from 'react-native';
+
+
+const  App = ()=>{
+
+    const [text,setText]= useState('');
+    const[item,setItem] = useState([]);
+
+    const update=input=>{
+        setText(input)
+    }
+    const addItem= ()=>{
+      //  Alert.alert(text);
+        setText('Item');
+        setItem([...item,text]);
+    }
+
+    return <View style={styles.container}>
+        <TextInput style={styles.input} value={text} onChangeText={update}/>
+        <Button title="Add" onPress={addItem}/>
+        <FlatList data={item} renderItem={itemData=>(
+                <TouchableHighlight   activeOpacity={0.6}
+                underlayColor="black" onPress={()=>{
+                    Alert.alert('Touched', itemData.item)
+                }}>
+                <View style={styles.listItem} >
+                    <Text>{itemData.item}</Text>
+                </View>
+                </TouchableHighlight>
+        )} />
+           
+    </View>
+};
+export default App;
+
+const styles = StyleSheet.create({
+    container:{
+        backgroundColor :'white',
+        paddingTop:50,
+        marginLeft :10,
+        flex:1,
+        paddingEnd:20
+    },
+    input: {
+        width:'100%',
+        borderColor:'black',
+        borderWidth:1,
+        padding:10,
+        marginBottom:10
+
+     },
+     listItem:{
+         padding:10,
+         marginVertical:10,
+         backgroundColor:'pink'
+     }
+});
+
+***************************************************************************************
+
+//react-redux integration
+import { createStore, coimbineReducers } from 'redux';
+import React from 'react';
+import { Provider, connect } from 'react-redux';
+import {View,Text,StyleSheet,Button} from 'react-native';
+
+const INCREMENT ='INCREMENT';
+
+//step 1 : Redux , Reducer,store actions
+const incrementReducer = (state = 10, action) => {
+    const { type } = action;
+    switch (type) {
+        case INCREMENT:
+            return state + 1
+        default:
+            return state;
+    }
+};
+//store
+const appStore = createStore(incrementReducer);
+/////////////////////////////////////////////////////////////////////////////////
+//step 2 : state mapper function
+//state is arg: redux whole state (getState())
+function mapStateToProp(state) {
+    //return configuration object : key : value
+    //key is going to be react prop
+    //value is going to be redux state
+    return {
+        counter: state
+    }
+}
+////////////////////////////////////////////////////////////////////////////////
+//Step 3: Declare React component
+
+const IncrementContainerComponent = props => {
+    return <IncrementDisplay {...props} />
+}
+
+//presentational components
+const IncrementDisplay = props => {
+    const { counter, dispatch } = props;
+    //event listener
+    const onIncrement = e => {
+        //dispatch an action to increment value
+        dispatch({ type: INCREMENT })
+    }
+    return <View style={styles.container}>
+        <Text>React - Redux - Counter App</Text>
+        <Text>Increment : {counter}</Text>
+        <Button onPress={onIncrement} title="Increment" color="green"/>
+    </View>
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//step 4 : create high order component ; Container Component
+const IncrementHOC = connect(mapStateToProp)(IncrementContainerComponent);
+//////////////////////////////////////////////////////////////////////////
+
+//Step 5 : Component rendering
+
+const App = () => <>
+    <Provider store={appStore}>
+        <IncrementHOC />
+    </Provider>
+</>
+export default App;
+
+const styles = StyleSheet.create({
+    container:{
+        backgroundColor :'white',
+        paddingTop:50,
+        marginLeft :10,
+        flex:1,
+        paddingEnd:20
+    },
+    input: {
+        width:'100%',
+        borderColor:'black',
+        borderWidth:1,
+        padding:10,
+        marginBottom:10
+
+     },
+     listItem:{
+         padding:10,
+         marginVertical:10,
+         backgroundColor:'pink'
+     }
+});

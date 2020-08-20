@@ -1,0 +1,74 @@
+Topics :
+
+
+React High level overview
+React Hooks
+useState,useEffect,CustomHooks
+
+React Native Introduction
+React Native Architecture
+React Native Components overview
+React Native Setup
+Expo work flow
+Native cli work flow
+Deploying App on Androd Virutal Device.
+
+
+Components Overview
+Basic Components
+User Interface
+List Views
+Android-specific
+Others
+
+View
+Text
+Image
+TextInput
+ScrollView
+Button
+Picker
+Switch
+StyleSheet Object
+
+
+Layouts
+Flexbox 
+Margin
+Padding
+
+
+ListViews
+FlatView
+SectionList
+
+Component Compostion
+Props 
+state
+Event Handling
+
+Handling Touches
+Navigating Between Screens
+Animations
+Gesture Responder System
+
+Device specific features
+
+connectivity
+network
+
+
+Native Modoules integration
+android modules
+Toast
+
+
+Redux integration
+
+Api calls
+
+Building end to end app
+
+
+
+
