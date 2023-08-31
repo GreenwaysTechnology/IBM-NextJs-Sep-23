@@ -1,0 +1,210 @@
+				Pages and Routing
+
+
+Page - UI
+layout - UI - Container
+
+Routing - unique identifier to identify the page
+
+index route /home route
+
+src
+ |
+ app
+  -layout.js
+  -page.js =====> /
+  |
+  about--------> /about  
+    |
+    page.js
+
+  course
+    |
+    page.js
+    layout.js
+   |
+   frontend
+      |
+     page.js
+     layout.js
+   cloud
+      page.js
+      layout.js
+
+   /course
+       <header>Your course</header
+   
+   /course/frontend/
+ 
+           Your course
+             frontend
+
+    /course/cloud
+        your course
+            cloud
+
+CSR + SSR
+
+CounterPage -parent
+    |
+   Counter -child
+.....................................................................................
+
+Patterns:
+ 
+1.Server component uses client compoent
+2.Client uses another another client component
+3.Client uses Server component
+
+Server component uses client Component
+
+
+Server component:
+
+counter/page.js
+
+import { Counter } from "./components/Counter";
+
+export default function CounterPage(){
+    return <div>
+        <h1>Counter Page</h1>
+        <Counter/>
+    </div>
+}
+
+counter/components/Counter.jsx
+
+"use client"
+import { useState } from "react"
+
+export const Counter = props => {
+    //hooks
+    const [counter, setCounter] = useState(0)
+
+    //listener
+    const onIncrement = () => {
+        setCounter(counter + 1)
+    }
+    return <>
+        <h1>Counter {counter} </h1>
+        <button onClick={onIncrement}>+</button>
+    </>
+
+}
+
+
+if client uses server, server component becomes client so we loose the purpose of server side rendering. - not recommended
+
+if client uses server but i dont want loose the server rendering feature -?
+	Pass Server Component  to Client component as "props"
+
+
+
+<Client>
+	<Server/>
+</Client>
+
+
+Dynamic Route:
+URL Pattern
+ http://localhost:3000/profile/2
+
+http://localhost:3000/todos  
+   |
+  master page
+
+
+http://localhost:3000/todos/1
+
+app
+ |
+(marketing)     market/sales or market/advt
+ layout.js
+  market
+   sales
+     page.js
+  page.js
+
+ advt  
+
+
+module.exports = {
+    async redirects() {
+      return [
+        {
+          source: '/',
+          destination: '/market',
+          permanent: true,
+        },
+      ]
+    },
+  }
+
+
+
+(customer)     /customers/
+ layout.js
+  customers 
+     add
+      page.js
+
+layout.js
+page.js
+
+http://www.mystore.com
+
+http://localhost:3000/customers
+
+
+ panel
+   |
+   @AdminPanel
+     page.js
+   @UserPanel
+     page.js
+  layout.js
+  page.js
+...................................................................................
+				Data Fetching
+...................................................................................
+
+Fetching can be done in two ways
+
+1.During request - SSR
+2.During build time / prerendering - SSG
+
+fetch api - It is highly recommened - because next has optimized fetch. 
+ next internally use fetch
+
+axios - you can use axios but external manuall configuration with respect performance and ISR.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
