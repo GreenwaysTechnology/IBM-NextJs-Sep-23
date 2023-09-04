@@ -1935,7 +1935,7 @@ There are two roles of api layer:
 1.integrating third party api 
 2.writing our own apis
 ...................................................................................
-				Route Handler -REST api 
+			Route Handler -REST api 
 ...................................................................................
 
 Route  handlers are used to create REST api in next js.

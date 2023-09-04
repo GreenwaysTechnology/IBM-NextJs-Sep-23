@@ -179,6 +179,167 @@ fetch api - It is highly recommened - because next has optimized fetch.
 axios - you can use axios but external manuall configuration with respect performance and ISR.
 
 
+CSR and datafecthing.
+
+Pattern 1: 
+  Convert server component as client component using 'use client' directive
+
+'use client';
+
+async function getAlbums() {
+    const url = `https://jsonplaceholder.typicode.com/albums`
+    const res = await fetch(url)
+    if (!res.ok) {
+        throw new Error('data is not available')
+    }
+    return res.json()
+}
+export default async function Album() {
+    const albums = await getAlbums()
+    return <div>
+        <h1>Album</h1>
+        <div>
+            {albums.map(album => {
+                return <h2 key={album.id}>{album.title}</h2>
+            })}
+        </div>
+    </div>
+}
+
+Here there is no state, useEffect
+
+ Which is not even recommened.
+
+Pattern 2: using useState,useEffect.
+'use client';
+import { useState, useEffect } from 'react'
+
+export const Albums = () => {
+    const [data, setData] = useState(null)
+    const [isLoading, setLoading] = useState(true)
+
+    useEffect(() => {
+        fetch('https://jsonplaceholder.typicode.com/albums')
+            .then((res) => res.json())
+            .then((data) => {
+                setData(data)
+                setLoading(false)
+            })
+    }, [])
+
+    if (isLoading) return <p>Loading...</p>
+    if (!data) return <p>No Album data</p>
+
+    return (
+        <div>
+            {data.map(album => {
+                return <h2 key={album.id}>{album.title}</h2>
+            })}
+        </div>
+    )
+}
+
+pattern 3:
+
+SWR - Stale-while-revalidate
+
+The name “SWR” is derived from stale-while-revalidate, a HTTP cache invalidation strategy popularized by HTTP RFC 5861(opens in a new tab). SWR is a strategy to first return the data from cache (stale), then send the fetch request (revalidate), and finally come with the up-to-date data.
+
+import useSWR from 'swr'
+ 
+function Profile() {
+  const { data, error, isLoading } = useSWR('/api/user', fetcher)
+ 
+  if (error) return <div>failed to load</div>
+  if (isLoading) return <div>loading...</div>
+  return <div>hello {data.name}!</div>
+}
+
+
+'use client';
+
+import useSWR from 'swr'
+
+function fetcher(...args) {
+    return fetch(...args).then(res => res.json())
+}
+
+export const Albums = () => {
+    const url = 'https://jsonplaceholder.typicode.com/albums'
+    const { data, error, isLoading } = useSWR(url, fetcher)
+    if (isLoading) return <p>Loading...</p>
+    if (error) return <p>No Album data</p>
+
+    return (
+        <div>
+            {data.map(album => {
+                return <h2 key={album.id}>{album.title}</h2>
+            })}
+        </div>
+    )
+}
+.....................................................................................
+
+Error Handling:
+
+What is ErrorBoundary?
+
+   Error boundaries are React components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of the component tree that crashed.
+
+
+'use client' // Error components must be Client Components
+ 
+import { useEffect } from 'react'
+ 
+export default function Error({ error, reset }) {
+  useEffect(() => {
+    // Log the error to an error reporting service
+    console.error(error)
+  }, [error])
+ 
+  return (
+    <div>
+      <h2>Something went wrong!</h2>
+      <button
+        onClick={
+          // Attempt to recover by trying to re-render the segment
+          () => reset()
+        }
+      >
+        Try again
+      </button>
+    </div>
+  )
+}
+.................................................................................
+page errors are handled by "error.js"
+
+layout and  templates errors are not handled by error.js rather we have write global-error.js
+
+...................
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

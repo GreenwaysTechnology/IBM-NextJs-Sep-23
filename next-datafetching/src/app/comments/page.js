@@ -21,3 +21,9 @@ export default async function CommentsPage() {
         })}
     </ul>
 }
+
+export async function generateStaticParams() {
+    console.log('building')
+    const comments = await getComments()
+    return comments;
+} 
