@@ -1,0 +1,436 @@
+
+http://localhost:3000/api
+src/api/route.js
+
+import { NextResponse } from "next/server";
+
+export async function GET(request) {
+
+    return NextResponse.json({ message: 'Home' })
+}
+
+src/api/todos/route.js
+import { NextResponse } from "next/server";
+
+export async function GET(request) {
+
+    return NextResponse.json({ message: 'todos' })
+}
+...................................................................................
+How to connect api with page
+
+src/app/todos/page.js
+
+export const revalidate = 10
+export default async function TodoPage() {
+  const response = await fetch('http://localhost:3000/api/todos')
+
+    const todos = await response.json()
+    return <>
+        <h1>Todos Page</h1>
+        <ul>
+            {
+                todos.map(todo => {
+                    return <li>{todo.title}</li>
+                })
+            }
+        </ul>
+    </>
+}
+...
+SUB resources:dynamic api route
+................................
+
+src/app/api/todos/[id]/route.js
+
+import { NextResponse } from "next/server";
+import { TODOS } from "@/mock-data/todos";
+
+export async function GET(request, { params }) {
+    const id = params.id
+    const todo = TODOS.filter(todo => todo.id === +id)
+    return NextResponse.json(todo)
+}
+.....................................................................................
+		  Connecting with External apis - REST API
+			(Integration)
+
+Next js api route can talk to other apis which might be microservices or plain rest api or graphql api...
+
+src/app/api/albums/route.js
+import { NextResponse } from "next/server";
+
+//rest api
+export async function GET(request) {
+    //use fetch api to talk to rest end points
+    const url = 'https://jsonplaceholder.typicode.com/albums'
+    const res = await fetch(url)
+    const albums = await res.json();
+        //send response
+    return NextResponse.json(albums)
+}
+
+....................................................................................
+			How to externalize the data
+.....................................................................................
+
+In the above example we have hardcoded the full url
+
+const url = 'https://jsonplaceholder.typicode.com/albums'
+
+
+How to externalize the config data....
+
+We have file called ".env" file
+
+
+....................................................................................
+			  Environment Variables
+....................................................................................
+
+Next js comes with built in support for environment variables, which allows you make to your app more flexible.
+
+.env file syntax
+
+.env.environment
+
+.environment is "dev | prod | test"
+
+.env.development
+.env.production
+.env.test
+.env.local
+
+
+import { NextResponse } from "next/server";
+
+//rest api
+export async function GET(request) {
+    //use fetch api to talk to rest end points
+    // const url = 'https://jsonplaceholder.typicode.com/albums'
+    const url = `${process.env.HOST}/albums`
+    const res = await fetch(url)
+    const albums = await res.json();
+    //send response
+    return NextResponse.json(albums)
+}
+.....................................................................................
+POST,PUT,DELETE:
+...............
+https://jsonplaceholder.typicode.com/albums/102
+
+https://jsonplaceholder.typicode.com/albums/1
+
+..
+src/app/albums/api/route.js
+import { NextResponse } from "next/server";
+
+const url = `${process.env.HOST}/albums`
+
+//rest api
+export async function GET(request) {
+    //use fetch api to talk to rest end points
+    // const url = 'https://jsonplaceholder.typicode.com/albums'
+    // const url = `${process.env.HOST}/albums`
+    const res = await fetch(url)
+    const albums = await res.json();
+    //send response
+    return NextResponse.json(albums)
+}
+export async function POST(request) {
+    const album = await request.json()
+    //post data to json place holder api
+
+    const res = await fetch(url, {
+        method: 'POST', headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(album)
+    })
+    //send response
+    const newAlbum = await res.json();
+    return NextResponse.json(newAlbum)
+}
+export async function PUT(request) {
+    const album = await request.json()
+    // console.log(id, userId, title)
+    console.log(album)
+    //post data to json place holder api
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(album)
+    };
+    const myurl = `${url}/${album.id}`
+    console.log(myurl)
+    const res = await fetch(myurl, requestOptions)
+    //send response
+    const updatedAlbum = await res.json()
+    return NextResponse.json(updatedAlbum)
+}
+
+src/app/albums/api/[id]/route.js
+getByid,delete by id
+
+import { NextResponse } from "next/server";
+
+const url = `${process.env.HOST}/albums`
+
+export async function GET(request, { params }) {
+    const id = params.id || 1
+    const res = await fetch(`${url}/${id}`)
+    const albums = await res.json();
+    //send response
+    return NextResponse.json(albums)
+}
+
+export async function DELETE(request, { params }) {
+    const id = params.id || 1
+    const result =await fetch(`${url}/${id}`, {
+        method: 'DELETE', headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    //send response
+    return NextResponse.json({message:'Album deleted'})
+}
+..............
+
+Database setup:
+
+ORM - Prisma
+database: sqllite
+
+E:\session\IBM\2023\aug\demo-api
+npm i @prisma/client
+npm i -D prisma
+
+E:\session\IBM\2023\aug\demo-api>npx prisma init --datasource-provider sqlite
+
+✔ Your Prisma schema was created at prisma/schema.prisma
+  You can now open it in your favorite editor.
+
+warn You already have a .gitignore file. Don't forget to add `.env` in it to not commit any private information.
+
+Next steps:
+1. Set the DATABASE_URL in the .env file to point to your existing database. If your database has no tables yet, read https://pris.ly/d/getting-started
+2. Run prisma db pull to turn your database schema into a Prisma schema.
+3. Run prisma generate to generate the Prisma Client. You can then start querying your database.
+
+More information in our documentation:
+https://pris.ly/d/getting-started
+
+primsma/schema.prisma
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  role      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+npx prisma migrate dev --name init
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": SQLite database "dev.db" at "file:./dev.db"
+
+SQLite database dev.db created at file:./dev.db
+
+Applying migration `20230807162752_init`
+
+The following migration(s) have been created and applied from new schema changes:
+
+migrations/
+  └─ 20230807162752_init/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+
+✔ Generated Prisma Client (5.1.1 | library) to .\node_modules\@prisma\client in 63ms
+
+
+seeding database:
+
+prisma/seed.mjs
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+async function main() {
+    const user = await prisma.user.upsert({
+        where: { email: "admin@admin.com" },
+        update: {},
+        create: {
+            name: "Admin",
+            email: "admin@admin.com",
+            role: "admin",
+        },
+    });
+
+    console.log({ user });
+}
+
+main()
+    .then(() => prisma.$disconnect())
+    .catch(async (e) => {
+        console.error(e);
+        await prisma.$disconnect();
+        process.exit();
+    });
+
+package.json
+ "prisma": {
+    "seed": "node prisma/seed.mjs"
+  }
+
+npx prisma db seed
+Environment variables loaded from .env
+Running seed command `node prisma/seed.mjs` ...
+{
+  user: {
+    id: 'b5577350-aa66-43c9-8088-66733b1ea7ff',
+    name: 'Admin',
+    email: 'admin@admin.com',
+    role: 'admin',
+    createdAt: 2023-08-07T16:34:59.294Z,
+    updatedAt: 2023-08-07T16:34:59.294Z
+  }
+}
+
+The seed command has been executed.
+
+src/lib/prisma.js
+import { PrismaClient } from "@prisma/client";
+const globalForPrisma = global;
+export const prisma = globalForPrisma.prisma ||
+    new PrismaClient({
+        log: ["query"],
+    });
+if (process.env.NODE_ENV != "production")
+    globalForPrisma.prisma;
+
+
+src/app/api/users/route.js
+http://localhost:3000/api/users
+
+response:
+{
+id: "b5577350-aa66-43c9-8088-66733b1ea7ff",
+name: "Admin",
+email: "admin@admin.com",
+role: "admin",
+createdAt: "2023-08-07T16:34:59.294Z",
+updatedAt: "2023-08-07T16:34:59.294Z"
+}
+]
+
+POST:
+
+src/app/api/users/route.js
+
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function POST(request) {
+    try {
+        const json = await request.json();
+        const user = await prisma.user.create({
+            data: json,
+        });
+        return new NextResponse(JSON.stringify(user), {
+            status: 201,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
+    catch (error) {
+        if (error.code === "P2002") {
+            return new NextResponse("User with email already exists", {
+                status: 409,
+            });
+        }
+        return new NextResponse(error.message, { status: 500 });
+    }
+}
+
+POST 
+
+{
+    "name": "Subramanian",
+    "email": "subu@admin.com",
+    "role": "guest"
+}
+
+PUT/DELETE
+
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+export async function GET(request, { params }) {
+    const id = params.id;
+    const user = await prisma.user.findUnique({
+        where: {
+            id,
+        },
+    });
+    if (!user) {
+        return new NextResponse("No user with ID found", { status: 404 });
+    }
+    return NextResponse.json(user);
+}
+export async function PATCH(request, { params }) {
+    const id = params.id;
+    let json = await request.json();
+    const updated_user = await prisma.user.update({
+        where: { id },
+        data: json,
+    });
+    if (!updated_user) {
+        return new NextResponse("No user with ID found", { status: 404 });
+    }
+    return NextResponse.json(updated_user);
+}
+export async function DELETE(request, { params }) {
+    try {
+        const id = params.id;
+        await prisma.user.delete({
+            where: { id },
+        });
+        return new NextResponse(null, { status: 204 });
+    }
+    catch (error) {
+        if (error.code === "P2025") {
+            return new NextResponse("No user with ID found", { status: 404 });
+        }
+        return new NextResponse(error.message, { status: 500 });
+    }
+}
+
+src/app/users/page.js
+export const revalidate = 10
+export default async function TodoPage() {
+    const response = await fetch('http://localhost:3000/api/users')
+    const users = await response.json()
+    return <>
+        <h1>Users Page</h1>
+        <ul>
+            {
+                users.map(user => {
+                    return <li>{user.id} - {user.name} - {user.email}</li>
+                })
+            }
+        </ul>
+    </>
+}
