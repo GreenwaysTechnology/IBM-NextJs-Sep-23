@@ -1,0 +1,29 @@
+{
+  "name": "apollo-gettingstarted",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc-watch --onSuccess \"node ./dist/index.js"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/datasource-rest": "^6.1.0",
+    "@apollo/server": "^4.9.3",
+    "@prisma/client": "^5.2.0",
+    "graphql": "^16.8.0"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.9",
+    "prisma": "^5.2.0",
+    "tsc-watch": "^6.0.4",
+    "typescript": "^5.2.2"
+  }
+}
